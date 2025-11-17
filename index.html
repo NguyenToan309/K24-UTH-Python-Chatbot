@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ lý Gợi ý Đồ uống</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS NÂNG CẤP --- */
+
+        /* 1. Tổng thể (ĐÃ SỬA LỖI) */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 40px;
+
+            /* --- ĐÃ SỬA LỖI --- */
+            
+            /* 1. ĐÂY LÀ LINK VÍ DỤ (ĐÚNG) */
+            /* Bạn hãy thay bằng link ảnh ĐÚNG của bạn (Copy Image Address) */
+            background-image: url('https://anviethouse.vn/wp-content/uploads/2022/05/Thiet-ke-quan-tra-sua-2-3.jpg');
+            
+            /* 2. Các thuộc tính này ĐÚNG */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            /* Đã xóa dòng bị lặp và lỗi cú pháp */
+        }
+
+        /* 2. Khung chính (NÊN SỬA LẠI ĐỂ ĐẸP HƠN) */
+        .container {
+            width: 100%;
+            max-width: 700px;
+            
+            /* THÊM MÃ NÀY để làm mờ nền, giúp chữ dễ đọc */
+            background: rgba(255, 255, 255, 0.95); /* Màu trắng mờ 95% */
+            backdrop-filter: blur(5px); /* Hiệu ứng mờ kính */
+            /* --- HẾT PHẦN THÊM --- */
+            
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px 40px;
+            box-sizing: border-box;
+            margin: 20px;
+        }
+
+        /* 3. Tiêu đề */
+        h1 {
+            color: #1a1a1a;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #555;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* 4. Thanh tìm kiếm (Quan trọng) */
+        .search-bar {
+            display: flex; /* Cho input và button nằm trên 1 hàng */
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        #searchBox {
+            flex-grow: 1; /* Input chiếm hết chỗ còn lại */
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-right: none; /* Bỏ viền phải để dính vào button */
+            border-radius: 8px 0 0 8px; /* Bo góc trái */
+            outline: none; /* Bỏ viền xanh khi click */
+            transition: border-color 0.3s;
+        }
+
+        /* Hiệu ứng khi click vào ô tìm kiếm */
+        #searchBox:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff; /* Màu xanh dương */
+            color: white;
+            border-radius: 0 8px 8px 0; /* Bo góc phải */
+            transition: background-color 0.3s;
+            white-space: nowrap; /* Không xuống hàng chữ */
+        }
+        
+        /* Hiệu ứng khi-di chuột vào nút */
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 5. Khu vực kết quả */
+        #results {
+            margin-top: 20px;
+        }
+
+        /* 6. Thẻ kết quả (Item Card) */
+        .item {
+            background: #fdfdfd;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        /* Hiệu ứng khi di chuột vào thẻ */
+        .item:hover {
+            transform: translateY(-3px); /* Nhấc thẻ lên */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .item h3 {
+            margin: 0 0 8px 0;
+            color: #0056b3; /* Màu tên sản phẩm */
+        }
+
+        .item p {
+            margin: 0 0 12px 0;
+            color: #444;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .item .price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #27ae60; /* Màu xanh lá cho giá */
+        }
+
+        /* 7. Trạng thái (Loading, Error) */
+        .status-text {
+            text-align: center;
+            font-size: 16px;
+            color: #777;
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        .error-text {
+            color: #e74c3c; /* Màu đỏ cho lỗi */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Trợ lý Gợi ý Đồ uống</h1>
+        <p class="subtitle">Mô tả sở thích của bạn, tôi sẽ tìm món phù hợp!</p>
+
+        <div class="search-bar">
+            <input type="text" id="searchBox" placeholder="Ví dụ: cần tỉnh táo, trời nóng, ít ngọt...">
+            <button onclick="search()">Tìm kiếm</button>
+        </div>
+
+        <div id="results">
+            </div>
+    </div>
+
+    <script>
+        // Hàm JavaScript giữ nguyên, chỉ sửa lại thông báo
+        async function search() {
+            let query = document.getElementById('searchBox').value;
+            let resultsDiv = document.getElementById('results');
+            
+            // Thêm class để CSS
+            resultsDiv.innerHTML = '<p class="status-text">Đang tìm kiếm...</p>';
+
+            try {
+                let response = await fetch(`/search?q=${encodeURIComponent(query)}`);
+                let results = await response.json();
+
+                resultsDiv.innerHTML = ""; // Xóa chữ "Đang tìm kiếm..."
+
+                if (results.length === 0) {
+                    // Thêm class lỗi
+                    resultsDiv.innerHTML = '<p class="status-text error-text">Không tìm thấy kết quả nào phù hợp.</p>';
+                } else {
+                    results.forEach(item => {
+                        resultsDiv.innerHTML += `
+                            <div class="item">
+                                <h3>${item.name}</h3>
+                                <p>${item.description_vn}</p>
+                                <div class="price">${item.price_vnd} VNĐ</div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = '<p class="status-text error-text">Lỗi khi kết nối đến máy chủ. Bạn đã chạy app.py chưa?</p>';
+            }
+        }
+        
+        // Thêm tính năng: Bấm "Enter" cũng tìm kiếm
+        document.getElementById('searchBox').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                search();
+            }
+        });
+
+    </script>
+
+</body>
+</html>
